@@ -1,1 +1,1043 @@
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCM – Histoire de la Philosophie Moderne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b3e;
+    --blue: #1a3a6e;
+    --mid-blue: #2a5298;
+    --accent: #4a90d9;
+    --light-blue: #c8dff8;
+    --pale: #eaf2fb;
+    --gold: #b8965a;
+    --white: #f8fafd;
+    --text: #1a2540;
+    --correct: #1a7a4a;
+    --correct-bg: #d4f0e3;
+    --wrong: #9b1b2a;
+    --wrong-bg: #fde0e3;
+  }
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6e 50%, #0d2857 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 60px;
+    position: relative;
+    overflow-x: hidden;
+  }
+ 
+  /* Decorative background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(74,144,217,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(74,144,217,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+ 
+  .container {
+    width: 100%;
+    max-width: 780px;
+    position: relative;
+    z-index: 1;
+  }
+ 
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.7s ease both;
+  }
+ 
+  .header-label {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+ 
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+ 
+  .header-sub {
+    color: var(--light-blue);
+    font-size: 0.9rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+ 
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 16px auto;
+  }
+ 
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 28px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+ 
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--light-blue);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+ 
+  .progress-bar-bg {
+    height: 5px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+ 
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+ 
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px 44px;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.07),
+      0 20px 60px rgba(0,0,0,0.25),
+      0 0 0 1px rgba(74,144,217,0.12);
+    animation: cardIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--mid-blue), var(--accent), var(--gold));
+  }
+ 
+  .hint-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--pale);
+    border: 1px solid var(--light-blue);
+    color: var(--mid-blue);
+    font-size: 0.75rem;
+    font-style: italic;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+ 
+  .hint-badge::before {
+    content: '💡';
+    font-style: normal;
+  }
+ 
+  .question-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+ 
+  .question-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+ 
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 12px; }
+ 
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1.5px solid #d0dae8;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    background: #fff;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.45;
+    text-align: left;
+    font-family: 'Source Serif 4', serif;
+  }
+ 
+  .option:hover:not(.disabled) {
+    border-color: var(--accent);
+    background: var(--pale);
+    transform: translateX(3px);
+  }
+ 
+  .option.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    color: var(--correct);
+    font-weight: 600;
+  }
+ 
+  .option.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+    color: var(--wrong);
+  }
+ 
+  .option.disabled { cursor: default; }
+ 
+  .option-letter {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--pale);
+    border: 1.5px solid #c8dff8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--mid-blue);
+    transition: background 0.2s, border-color 0.2s;
+  }
+ 
+  .option.correct .option-letter {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: #fff;
+  }
+ 
+  .option.wrong .option-letter {
+    background: var(--wrong);
+    border-color: var(--wrong);
+    color: #fff;
+  }
+ 
+  /* Feedback box */
+  .feedback {
+    margin-top: 24px;
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: none;
+    animation: fadeIn 0.3s ease both;
+  }
+ 
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    border-left: 4px solid var(--correct);
+    display: block;
+  }
+ 
+  .feedback.wrong-fb {
+    background: var(--wrong-bg);
+    border-left: 4px solid var(--wrong);
+    display: block;
+  }
+ 
+  .feedback-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+ 
+  .feedback.correct-fb .feedback-title { color: var(--correct); }
+  .feedback.wrong-fb .feedback-title { color: var(--wrong); }
+ 
+  .feedback-seance {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--mid-blue);
+    margin-bottom: 8px;
+  }
+ 
+  .feedback-quote {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #2a3a5a;
+    line-height: 1.6;
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+    margin-top: 8px;
+  }
+ 
+  /* Next button */
+  .btn-next {
+    display: none;
+    margin-top: 24px;
+    background: linear-gradient(135deg, var(--mid-blue), var(--accent));
+    color: #fff;
+    border: none;
+    padding: 13px 36px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(42,82,152,0.3);
+  }
+ 
+  .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-next.show { display: inline-block; animation: fadeIn 0.3s ease both; }
+ 
+  /* Results */
+  .results {
+    display: none;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 44px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: cardIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  .results::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--mid-blue), var(--accent), var(--gold));
+  }
+ 
+  .results-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+ 
+  .score-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--mid-blue);
+    line-height: 1;
+    margin: 20px 0 4px;
+  }
+ 
+  .score-label {
+    color: #6a7fa8;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+ 
+  .appreciation {
+    font-size: 1.05rem;
+    color: var(--text);
+    font-style: italic;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    padding: 16px 24px;
+    background: var(--pale);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+ 
+  .results-seances {
+    text-align: left;
+    background: #f0f5fc;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+ 
+  .results-seances h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+ 
+  .results-seances ul {
+    list-style: none;
+    padding: 0;
+  }
+ 
+  .results-seances li {
+    font-size: 0.88rem;
+    color: var(--mid-blue);
+    padding: 4px 0;
+    border-bottom: 1px solid #d8e6f5;
+  }
+ 
+  .results-seances li:last-child { border-bottom: none; }
+ 
+  .warning-note {
+    margin-top: 22px;
+    font-size: 0.85rem;
+    color: #7a5a1a;
+    background: #fdf5e0;
+    border: 1px solid #e8d090;
+    border-radius: 8px;
+    padding: 12px 18px;
+    line-height: 1.5;
+  }
+ 
+  .btn-restart {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--navy), var(--mid-blue));
+    color: #fff;
+    border: none;
+    padding: 13px 40px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+ 
+  .btn-restart:hover { opacity: 0.85; }
+ 
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+  }
+ 
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+ 
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+ 
+  @media (max-width: 600px) {
+    .card, .results { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+ 
+<canvas id="confetti-canvas"></canvas>
+ 
+<div class="container">
+  <div class="header">
+    <div class="header-label">IPC · Facultés Libres de Philosophie et de Psychologie</div>
+    <h1>Histoire de la Philosophie Moderne</h1>
+    <div class="divider"></div>
+    <div class="header-sub">Questionnaire de révision — Licence de psychologie, 1<sup>re</sup> année · 2025-2026</div>
+  </div>
+ 
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-meta">
+      <span id="progress-label">Question 1 / 20</span>
+      <span id="score-live">Score : 0 / 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-bar" style="width:5%"></div>
+    </div>
+  </div>
+ 
+  <div class="card" id="question-card">
+    <div class="hint-badge" id="hint-badge"></div>
+    <div class="question-num" id="question-num"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options-container"></div>
+    <div class="feedback" id="feedback-box">
+      <div class="feedback-title" id="feedback-title"></div>
+      <div class="feedback-seance" id="feedback-seance"></div>
+      <div class="feedback-quote" id="feedback-quote"></div>
+    </div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante →</button>
+  </div>
+ 
+  <div class="results" id="results-card">
+    <div class="results-title">Résultats finaux</div>
+    <div class="score-display" id="final-score"></div>
+    <div class="score-label">points sur 20</div>
+    <div class="appreciation" id="appreciation-text"></div>
+    <div class="results-seances" id="seances-to-review"></div>
+    <div class="warning-note">⚠️ Toutes les séances sont à réviser, ce test est une aide, et ne remplace en aucun cas le travail de révision.</div>
+    <button class="btn-restart" onclick="restartQuiz()">↺ Recommencer le quiz</button>
+  </div>
+</div>
+ 
+<script>
+const questions = [
+  {
+    seance: 11,
+    hint: "Séance 11 — Malebranche",
+    question: "Selon Malebranche, quelle est la cause principale de la misère des hommes ?",
+    options: ["Le péché originel", "L'erreur", "La pauvreté matérielle", "L'ignorance de Dieu"],
+    correct: 1,
+    quote: "« L'erreur est la cause de la misère des hommes ; c'est le mauvais principe qui a produit le mal dans le monde. »",
+    source: "Malebranche, De la Recherche de la vérité, Livre I, Chapitre 1, § 1"
+  },
+  {
+    seance: 11,
+    hint: "Séance 11 — Malebranche",
+    question: "Comment Malebranche définit-il le corps dans la Recherche de la vérité ?",
+    options: [
+      "Comme une substance pensante",
+      "Comme une combinaison d'âme et de matière",
+      "Comme l'étendue en longueur, largeur et profondeur",
+      "Comme une collection d'idées sensibles"
+    ],
+    correct: 2,
+    quote: "« Le corps n'est que l'étendue en longueur, largeur et profondeur, et toutes ses propriétés ne consistent que dans le repos et le mouvement. »",
+    source: "Malebranche, De la Recherche de la vérité, Livre I, Chapitre 10, § 1"
+  },
+  {
+    seance: 11,
+    hint: "Séance 11 — Malebranche",
+    question: "Quelle est la thèse centrale de l'occasionnalisme de Malebranche ?",
+    options: [
+      "Les corps se meuvent d'eux-mêmes par leur propre force",
+      "Les esprits finis sont les véritables causes du mouvement des corps",
+      "Seule la volonté de Dieu est la véritable cause du mouvement des corps",
+      "La matière et l'esprit interagissent directement"
+    ],
+    correct: 2,
+    quote: "« Il n'y a que sa volonté [de Dieu] qui puisse remuer les corps. […] Une cause naturelle n'est donc point une cause réelle et véritable, mais seulement une cause occasionnelle. »",
+    source: "Malebranche, De la Recherche de la vérité, Livre VI, Seconde partie, Chapitre 3"
+  },
+  {
+    seance: 11,
+    hint: "Séance 11 — Malebranche",
+    question: "Où Malebranche affirme-t-il que nous voyons nos idées claires ?",
+    options: [
+      "Dans notre propre entendement",
+      "Dans les choses matérielles elles-mêmes",
+      "Dans l'imagination",
+      "En Dieu"
+    ],
+    correct: 3,
+    quote: "« Toutes nos idées claires sont en Dieu quant à leur réalité intelligible. Ce n'est qu'en lui que nous les voyons. »",
+    source: "Malebranche, Entretiens sur la métaphysique et sur la religion, Ier Entretien, Article X"
+  },
+  {
+    seance: 12,
+    hint: "Séance 12 — Spinoza",
+    question: "Comment Spinoza définit-il la substance dans l'Éthique ?",
+    options: [
+      "Ce qui est en Dieu et conçu par Dieu seul",
+      "Ce qui est en soi et conçu par soi",
+      "Ce qui est dans une autre chose et conçu par cette autre chose",
+      "Ce dont l'essence n'enveloppe pas l'existence"
+    ],
+    correct: 1,
+    quote: "« J'entends par substance ce qui est en soi et est conçu par soi : c'est-à-dire ce dont le concept n'a pas besoin du concept d'une autre chose. »",
+    source: "Spinoza, Éthique, Première partie, Définition 3"
+  },
+  {
+    seance: 12,
+    hint: "Séance 12 — Spinoza",
+    question: "Quelle proposition Spinoza démontre-t-il avec la formule « Tout ce qui est, est en Dieu et rien ne peut sans Dieu être ni être conçu » ?",
+    options: [
+      "Proposition 11 : Dieu existe nécessairement",
+      "Proposition 14 : nulle substance en dehors de Dieu ne peut être donnée",
+      "Proposition 15 : tout ce qui est, est en Dieu",
+      "Proposition 18 : Dieu est cause immanente de toutes choses"
+    ],
+    correct: 2,
+    quote: "« Tout ce qui est, est en Dieu et rien ne peut sans Dieu être ni être conçu. »",
+    source: "Spinoza, Éthique, Première partie, Proposition 15"
+  },
+  {
+    seance: 12,
+    hint: "Séance 12 — Spinoza",
+    question: "Selon Spinoza, comment Dieu est-il cause de toutes choses ?",
+    options: [
+      "Comme cause transitive, agissant depuis l'extérieur du monde",
+      "Comme cause occasionnelle déterminant les esprits finis",
+      "Comme cause immanente, non transitive",
+      "Comme cause efficiente séparée de ses effets"
+    ],
+    correct: 2,
+    quote: "« Dieu est cause immanente mais non transitive de toutes choses. »",
+    source: "Spinoza, Éthique, Première partie, Proposition 18"
+  },
+  {
+    seance: 14,
+    hint: "Séance 14 — Leibniz (Métaphysique)",
+    question: "Qu'est-ce qu'une monade selon Leibniz dans la Monadologie ?",
+    options: [
+      "Un agrégat de parties divisibles à l'infini",
+      "Une substance simple, sans parties, entrant dans les composés",
+      "Un atome matériel et étendu",
+      "Une idée présente dans l'entendement divin"
+    ],
+    correct: 1,
+    quote: "« La monade, dont nous parlerons ici, n'est autre chose, qu'une substance simple, qui entre dans les composés ; simple, c'est-à-dire sans parties. »",
+    source: "Leibniz, Monadologie, § 1"
+  },
+  {
+    seance: 14,
+    hint: "Séance 14 — Leibniz (Métaphysique)",
+    question: "Pourquoi Leibniz affirme-t-il que les monades n'ont point de fenêtres ?",
+    options: [
+      "Parce qu'elles sont matérielles et imperméables",
+      "Parce qu'aucune cause externe ne peut influer dans leur intérieur",
+      "Parce qu'elles ne perçoivent pas le monde extérieur",
+      "Parce qu'elles sont créées indépendamment de Dieu"
+    ],
+    correct: 1,
+    quote: "« Les monades n'ont point de fenêtres, par lesquelles quelque chose y puisse entrer ou sortir. »",
+    source: "Leibniz, Monadologie, § 7"
+  },
+  {
+    seance: 14,
+    hint: "Séance 14 — Leibniz (Métaphysique)",
+    question: "Comment Leibniz décrit-il chaque monade par rapport à l'univers ?",
+    options: [
+      "Comme une partie inerte de l'univers physique",
+      "Comme un miroir vivant et représentatif de l'univers suivant son point de vue",
+      "Comme une substance isolée sans rapport avec le reste",
+      "Comme un fragment de la substance divine"
+    ],
+    correct: 1,
+    quote: "« Chaque monade est un miroir vivant, ou doué d'action interne, représentatif de l'univers, suivant son point de vue. »",
+    source: "Leibniz, Principes de la nature et de la grâce, § 3"
+  },
+  {
+    seance: 15,
+    hint: "Séance 15 — Leibniz (Épistémologie)",
+    question: "Quelle distinction fondamentale Leibniz établit-il entre perception et apperception ?",
+    options: [
+      "La perception est consciente, l'apperception est inconsciente",
+      "La perception est l'état intérieur représentant les choses externes ; l'apperception est la conscience réflexive de cet état",
+      "La perception vient des sens externes ; l'apperception vient de la raison",
+      "La perception appartient aux hommes ; l'apperception appartient à Dieu seul"
+    ],
+    correct: 1,
+    quote: "« Il est bon de faire la distinction entre la perception qui est l'état intérieur de la monade représentant les choses externes, et l'apperception qui est la conscience, ou la connaissance réflexive de cet état intérieur. »",
+    source: "Leibniz, Principes de la nature et de la grâce, § 4"
+  },
+  {
+    seance: 15,
+    hint: "Séance 15 — Leibniz (Épistémologie)",
+    question: "Quelle métaphore Leibniz utilise-t-il pour critiquer la théorie de la tabula rasa lockéenne ?",
+    options: [
+      "L'âme est comme une cire vierge",
+      "L'âme est comme un miroir sans tain",
+      "L'âme est comme un marbre avec des veines préfigurant la forme d'Hercule",
+      "L'âme est comme un tableau vide offert à l'expérience"
+    ],
+    correct: 2,
+    quote: "« S'il y avait des veines dans la pierre qui marquassent la figure d'Hercule préférablement à d'autres figures, cette pierre y serait plus déterminée, et Hercule y serait comme inné en quelque façon. »",
+    source: "Leibniz, Nouveaux Essais sur l'entendement humain, Préface"
+  },
+  {
+    seance: 16,
+    hint: "Séance 16 — Hobbes",
+    question: "Quelle est la thèse de Hobbes concernant l'universalité dans les Éléments de la loi naturelle ?",
+    options: [
+      "Les universaux existent réellement dans la nature des choses",
+      "Les universaux existent dans l'entendement sous forme de concepts",
+      "Il n'y a rien d'universel, sinon les noms",
+      "L'universel est une abstraction divine"
+    ],
+    correct: 2,
+    quote: "« Il est évident, par conséquent, qu'il n'y a rien d'universel, sinon les noms. »",
+    source: "Hobbes, Éléments de la loi naturelle, première partie, V, § 6"
+  },
+  {
+    seance: 16,
+    hint: "Séance 16 — Hobbes",
+    question: "Quelles sont, selon Hobbes dans le Léviathan, les trois causes principales de conflit dans la nature humaine ?",
+    options: [
+      "L'orgueil, l'avarice, la luxure",
+      "La compétition, la défiance, la gloire",
+      "La peur, la haine, l'ignorance",
+      "L'envie, la colère, la jalousie"
+    ],
+    correct: 1,
+    quote: "« On trouve dans la nature humaine trois causes principales de conflit : premièrement, la compétition ; deuxièmement, la défiance ; troisièmement, la gloire. »",
+    source: "Hobbes, Léviathan, XIII"
+  },
+  {
+    seance: 17,
+    hint: "Séance 17 — Locke",
+    question: "Selon Locke, d'où provient toute connaissance humaine ?",
+    options: [
+      "De principes innés gravés dans la raison",
+      "De l'illumination divine",
+      "De l'expérience, par la sensation et la réflexion",
+      "De la tradition et de l'autorité"
+    ],
+    correct: 2,
+    quote: "« D'où puise-t-il ce qui fait le matériau de la raison et de la connaissance ? Je répondrai d'un seul mot : de l'expérience. »",
+    source: "Locke, Essai sur l'entendement humain, II, I, § 2"
+  },
+  {
+    seance: 17,
+    hint: "Séance 17 — Locke",
+    question: "Comment Locke définit-il l'identité personnelle dans l'Essai sur l'entendement humain ?",
+    options: [
+      "Par l'identité de la substance corporelle",
+      "Par l'identité de l'âme immatérielle",
+      "Par la conscience qui s'étend aux pensées et actes passés",
+      "Par la continuité biologique de l'organisme"
+    ],
+    correct: 2,
+    quote: "« Aussi loin que peut remonter la conscience dans ses pensées et ses actes passés, aussi loin s'étend l'identité de cette personne. »",
+    source: "Locke, Essai sur l'entendement humain, II, XXVII, § 9"
+  },
+  {
+    seance: 18,
+    hint: "Séance 18 — Berkeley",
+    question: "Quelle est la formule résumant le principe central de l'immatérialisme de Berkeley ?",
+    options: [
+      "« Cogito, ergo sum »",
+      "« Exister, c'est être perçu ou percevoir »",
+      "« Esse est posse »",
+      "« Nihil est in intellectu quod prius non fuerit in sensu »"
+    ],
+    correct: 1,
+    quote: "« Exister (existere) c'est être perçu (percipi) ou percevoir (percipere). »",
+    source: "Berkeley, Notes philosophiques. Carnets A et B, 429-429a"
+  },
+  {
+    seance: 18,
+    hint: "Séance 18 — Berkeley",
+    question: "Pourquoi Berkeley rejette-t-il la notion de matière ou substance corporelle ?",
+    options: [
+      "Parce que la matière est trop complexe à étudier scientifiquement",
+      "Parce que l'étendue, la figure et le mouvement ne sont que des idées dans l'esprit, et qu'une idée ne peut ressembler qu'à une idée",
+      "Parce que la matière est une création humaine arbitraire",
+      "Parce que Dieu n'a pas créé de substance matérielle"
+    ],
+    correct: 1,
+    quote: "« L'étendue, la figure et le mouvement sont seulement des idées existant dans l'esprit, qu'une idée ne peut ressembler à rien qu'à une autre idée. […] La notion même de ce qu'on appelle matière ou substance corporelle implique contradiction. »",
+    source: "Berkeley, Principes de la connaissance humaine, I, § 9"
+  },
+  {
+    seance: 19,
+    hint: "Séance 19 — Hume",
+    question: "Quelle distinction Hume établit-il entre impressions et idées dans l'Enquête sur l'entendement humain ?",
+    options: [
+      "Les impressions sont innées ; les idées viennent de l'expérience",
+      "Les impressions sont les perceptions les plus vives ; les idées sont des copies moins vives des impressions",
+      "Les impressions relèvent de la raison ; les idées des sens",
+      "Les impressions sont fausses ; les idées sont vraies"
+    ],
+    correct: 1,
+    quote: "« Toutes nos idées ou perceptions plus faibles sont des copies de nos impressions ou perceptions plus vives. »",
+    source: "Hume, Enquête sur l'entendement humain, Section II"
+  },
+  {
+    seance: 19,
+    hint: "Séance 19 — Hume",
+    question: "Quelle est la conclusion de Hume sur l'idée du moi dans le Traité de la nature humaine ?",
+    options: [
+      "Le moi est une substance permanente et immuable",
+      "Le moi est connu par une impression constante et invariable",
+      "Il n'existe pas d'impression constante du moi, donc une telle idée n'existe pas",
+      "Le moi est une idée innée présente dès la naissance"
+    ],
+    correct: 2,
+    quote: "« Il n'y a pas d'impression constante et invariable. […] Ce ne peut donc être d'aucune de ces impressions, ni d'aucune autre qu'est dérivée l'idée du moi ; par conséquent une telle idée n'existe pas. »",
+    source: "Hume, Traité de la nature humaine, Livre I, Quatrième partie, Section VI"
+  }
+];
+ 
+let currentQ = 0;
+let score = 0;
+let answered = 0;
+let wrongSeances = new Set();
+let confettiInterval = null;
+let confettiAnimFrame = null;
+ 
+const letters = ['A', 'B', 'C', 'D'];
+ 
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+ 
+// Randomize option positions per question
+let shuffledQuestions = [];
+ 
+function prepareQuestions() {
+  shuffledQuestions = questions.map(q => {
+    const opts = q.options.map((text, i) => ({ text, isCorrect: i === q.correct }));
+    const shuffled = shuffle(opts);
+    const newCorrect = shuffled.findIndex(o => o.isCorrect);
+    return { ...q, displayOptions: shuffled.map(o => o.text), displayCorrect: newCorrect };
+  });
+}
+ 
+function renderQuestion() {
+  const q = shuffledQuestions[currentQ];
+  document.getElementById('hint-badge').textContent = '💡 Indice : consulter la ' + q.hint;
+  document.getElementById('question-num').textContent = `Question ${currentQ + 1} sur 20`;
+  document.getElementById('question-text').textContent = q.question;
+ 
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  q.displayOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    container.appendChild(btn);
+  });
+ 
+  document.getElementById('feedback-box').className = 'feedback';
+  document.getElementById('btn-next').className = 'btn-next';
+ 
+  // Progress
+  const pct = Math.round(((currentQ) / 20) * 100) + 5;
+  document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  document.getElementById('progress-label').textContent = `Question ${currentQ + 1} / 20`;
+  document.getElementById('score-live').textContent = `Score : ${score} / ${answered}`;
+}
+ 
+function selectAnswer(chosenIdx) {
+  const q = shuffledQuestions[currentQ];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+ 
+  answered++;
+  const isCorrect = chosenIdx === q.displayCorrect;
+ 
+  options[chosenIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    options[q.displayCorrect].classList.add('correct');
+    wrongSeances.add(q.seance);
+  } else {
+    score++;
+    launchConfetti(false);
+  }
+ 
+  // Feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('feedback-title').textContent = isCorrect ? '✓ Bonne réponse !' : '✗ Mauvaise réponse';
+  document.getElementById('feedback-seance').textContent = `📖 Source — ${q.source}`;
+  document.getElementById('feedback-quote').textContent = q.quote;
+ 
+  document.getElementById('score-live').textContent = `Score : ${score} / ${answered}`;
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+ 
+function nextQuestion() {
+  stopConfetti();
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResults();
+  } else {
+    // Re-render card with animation
+    const card = document.getElementById('question-card');
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'cardIn 0.45s cubic-bezier(0.22,1,0.36,1) both';
+    renderQuestion();
+  }
+}
+ 
+function showResults() {
+  document.getElementById('question-card').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+ 
+  const res = document.getElementById('results-card');
+  res.style.display = 'block';
+  document.getElementById('final-score').textContent = score;
+ 
+  let appr = '';
+  if (score <= 7) {
+    appr = 'Les fondements sont encore fragiles. Une relecture attentive des textes s\'impose : prenez le temps de vous imprégner des thèses de chaque auteur.';
+  } else if (score <= 10) {
+    appr = 'Des acquis sont présents, mais des lacunes subsistent. Concentrez-vous sur les distinctions conceptuelles clés entre les auteurs.';
+  } else if (score <= 14) {
+    appr = 'Bon niveau de compréhension générale ! Quelques points méritent encore approfondissement. Vous êtes sur la bonne voie.';
+  } else {
+    appr = 'Excellent résultat ! Votre maîtrise des grandes thèses de la philosophie moderne est remarquable. Continuez à approfondir les nuances.';
+    launchConfetti(true);
+  }
+ 
+  document.getElementById('appreciation-text').textContent = appr;
+ 
+  const seanceNames = {
+    11: 'Séance 11 — Malebranche (De la Recherche de la vérité)',
+    12: 'Séance 12 — Spinoza (Éthique)',
+    14: 'Séance 14 — Leibniz (Métaphysique / Monadologie)',
+    15: 'Séance 15 — Leibniz (Épistémologie)',
+    16: 'Séance 16 — Hobbes (Léviathan)',
+    17: 'Séance 17 — Locke (Essai sur l\'entendement humain)',
+    18: 'Séance 18 — Berkeley (Principes & Dialogues)',
+    19: 'Séance 19 — Hume (Enquête & Traité)'
+  };
+ 
+  const reviewDiv = document.getElementById('seances-to-review');
+  if (wrongSeances.size === 0) {
+    reviewDiv.innerHTML = '<h3>📚 Séances à réviser</h3><p style="font-size:0.9rem;color:#2a7a4a;">Félicitations, aucune séance incorrecte !</p>';
+  } else {
+    const sorted = [...wrongSeances].sort((a,b)=>a-b);
+    const items = sorted.map(s => `<li>• ${seanceNames[s] || 'Séance ' + s}</li>`).join('');
+    reviewDiv.innerHTML = `<h3>📚 Séances à réviser en priorité</h3><ul>${items}</ul>`;
+  }
+}
+ 
+function restartQuiz() {
+  currentQ = 0;
+  score = 0;
+  answered = 0;
+  wrongSeances.clear();
+  stopConfetti();
+  prepareQuestions();
+ 
+  document.getElementById('results-card').style.display = 'none';
+  document.getElementById('question-card').style.display = 'block';
+  document.getElementById('progress-wrap').style.display = 'block';
+  renderQuestion();
+}
+ 
+// ---- Confetti ----
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let continuous = false;
+ 
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+ 
+function createParticle() {
+  const colors = ['#4a90d9','#b8965a','#2a5298','#1a7a4a','#d4af37','#c8dff8','#f5c842'];
+  return {
+    x: Math.random() * canvas.width,
+    y: -12,
+    vx: (Math.random() - 0.5) * 4,
+    vy: Math.random() * 3 + 2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    size: Math.random() * 8 + 5,
+    spin: Math.random() * 0.2 - 0.1,
+    angle: Math.random() * Math.PI * 2,
+    shape: Math.random() > 0.5 ? 'rect' : 'circle',
+    life: 1
+  };
+}
+ 
+function animateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (continuous && particles.length < 200) {
+    for (let i = 0; i < 5; i++) particles.push(createParticle());
+  }
+  particles = particles.filter(p => p.y < canvas.height + 20 && p.life > 0);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.05;
+    p.angle += p.spin;
+    if (!continuous) p.life -= 0.005;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angle);
+    ctx.globalAlpha = continuous ? 0.9 : p.life;
+    ctx.fillStyle = p.color;
+    if (p.shape === 'rect') {
+      ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+    } else {
+      ctx.beginPath();
+      ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+  if (particles.length > 0 || continuous) {
+    confettiAnimFrame = requestAnimationFrame(animateConfetti);
+  } else {
+    canvas.style.display = 'none';
+  }
+}
+ 
+function launchConfetti(cont) {
+  stopConfetti();
+  continuous = cont;
+  canvas.style.display = 'block';
+  particles = [];
+  const count = cont ? 80 : 120;
+  for (let i = 0; i < count; i++) {
+    const p = createParticle();
+    p.y = -Math.random() * 100;
+    particles.push(p);
+  }
+  animateConfetti();
+}
+ 
+function stopConfetti() {
+  continuous = false;
+  if (confettiAnimFrame) { cancelAnimationFrame(confettiAnimFrame); confettiAnimFrame = null; }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.style.display = 'none';
+  particles = [];
+}
+ 
+// Init
+prepareQuestions();
+renderQuestion();
+</script>
+</body>
+</html>
+ 
